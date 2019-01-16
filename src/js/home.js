@@ -78,6 +78,12 @@ fetch('https://randomuser.me/api/dsfdsfsd')
     return data;
   }
 
+  const $form = document.getElementById('form');
+
+  $form.addEventListener('submit', (event) => {
+    event.preventDefault();
+  })
+
   const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
   const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
   const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
@@ -101,24 +107,34 @@ fetch('https://randomuser.me/api/dsfdsfsd')
   }
   // console.log(videoItemTemplate('src/images/covers/bitcoinjpg', 'bitcoin'));
 
+  function addEventClick($element) {
+    $element.addEventListener('click', () => {
+      alert('click')
+    })
+    //$('div').on('click')
+  }
   function renderMovieList(list, $container) {
+    $container.children[0].remove();
     //actionList.data.movies.forEach((movie) => {
     list.forEach((movie) => {
       const HTMLString = videoItemTemplate(movie);
       const movieElement = createTemplate(HTMLString)
       $container.append(movieElement);
-
+      addEventClick(movieElement);
     })
   }
   const $actionContainer = document.querySelector('#action');
-
   renderMovieList(actionList.data.movies, $actionContainer)
-  const $dramaContainer = document.getElementById('#drama');
-  const $animationContainer = document.getElementById('#animation');
+
+  const $dramaContainer = document.getElementById('drama');
+  renderMovieList(dramaList.data.movies, $dramaContainer)
+
+  const $animationContainer = document.getElementById('animation');
+  renderMovieList(animationList.data.movies, $animationContainer)
+
 
 
   const $featuringContainer = document.getElementById('#featuring');
-  const $form = document.getElementById('#form');
   const $home = document.getElementById('#home');
 
 
