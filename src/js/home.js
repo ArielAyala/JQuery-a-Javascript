@@ -80,10 +80,26 @@ fetch('https://randomuser.me/api/dsfdsfsd')
 
   const $form = document.getElementById('form');
   const $home = document.getElementById('home');
+  const $featuringContainer = document.getElementById('featuring');
+
+
+  function setAttributes($element, attributes) {
+    for (const attribute in attributes) {
+      $element.setAttribute(attribute, attributes[attribute])
+    }
+  }
 
   $form.addEventListener('submit', (event) => {
     event.preventDefault();
     $home.classList.add('search-active')
+    const $loader = document.createElement('img');
+    setAttributes($loader, {
+      src: 'src/images/loader.gif',
+      height: 50,
+      width: 50,
+    })
+    $featuringContainer.append($loader)
+
   })
 
   const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
@@ -137,7 +153,6 @@ fetch('https://randomuser.me/api/dsfdsfsd')
 
 
 
-  const $featuringContainer = document.getElementById('#featuring');
 
 
   // const $home = $('.home .list #item');
@@ -151,14 +166,14 @@ fetch('https://randomuser.me/api/dsfdsfsd')
 
   function showModal() {
     $overlay.classList.add('active');
-    $modal.style.animation= 'modalIn .8s forwards';
+    $modal.style.animation = 'modalIn .8s forwards';
   }
 
-  $hideModal.addEventListener('click',hideModal);
+  $hideModal.addEventListener('click', hideModal);
 
   function hideModal() {
     $overlay.classList.remove('active');
-    $modal.style.animation= 'modalOut .8s forwards';
+    $modal.style.animation = 'modalOut .8s forwards';
   }
 
 
