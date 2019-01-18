@@ -189,11 +189,16 @@ fetch('https://randomuser.me/api/dsfdsfsd')
   const $modalImage = $modal.querySelector('img');
   const $modalDescription = $modal.querySelector('p');
 
+  function findMovie(id,category) {
+    
+  }
+
   function showModal($element) {
     $overlay.classList.add('active');
     $modal.style.animation = 'modalIn .8s forwards';
     const id = $element.dataset.id
     const category = $element.dataset.category;
+    const data = findMovie(id,category);
   }
 
   $hideModal.addEventListener('click', hideModal);
