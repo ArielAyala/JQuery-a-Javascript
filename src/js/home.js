@@ -77,7 +77,6 @@ fetch('https://randomuser.me/api/dsfdsfsd')
     const data = await response.json()
     return data;
   }
-
   const $form = document.getElementById('form');
   const $home = document.getElementById('home');
   const $featuringContainer = document.getElementById('featuring');
@@ -85,7 +84,7 @@ fetch('https://randomuser.me/api/dsfdsfsd')
 
   function setAttributes($element, attributes) {
     for (const attribute in attributes) {
-      $element.setAttribute(attribute, attributes[attribute])
+      $element.setAttribute(attribute, attributes[attribute]);
     }
   }
   const BASE_API = 'https://yts.am/api/v2/';
@@ -105,6 +104,7 @@ fetch('https://randomuser.me/api/dsfdsfsd')
       `
     )
   }
+
   $form.addEventListener('submit', async (event) => {
     event.preventDefault();
     $home.classList.add('search-active')
@@ -114,7 +114,7 @@ fetch('https://randomuser.me/api/dsfdsfsd')
       height: 50,
       width: 50,
     })
-    $featuringContainer.append($loader)
+    $featuringContainer.append($loader);
 
     const data = new FormData($form);
     const {
@@ -122,18 +122,18 @@ fetch('https://randomuser.me/api/dsfdsfsd')
         movies: pelis
       }
     } = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`)
-    debugger
+
     const HTMLString = featuringTemplate(pelis[0]);
     $featuringContainer.innerHTML = HTMLString;
   })
 
-  const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
-  const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
-  const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
+  const { data: { movies: actionList } } = await getData(`${BASE_API}list_movies.json?genre=action`)
+  const { data: { movies: dramaList } } = await getData(`${BASE_API}list_movies.json?genre=drama`)
+  const { data: { movies: animationList } } = await getData(`${BASE_API}list_movies.json?genre=animation`)
   console.log(actionList, dramaList, animationList)
   function videoItemTemplate(movie, category) {
     return (
-      `<div class="primaryPlaylistItem" data-id = "${movie.id}" data-category=${category} >
+      `<div class="primaryPlaylistItem" data-id="${movie.id}" data-category=${category}>
         <div class="primaryPlaylistItem-image">
           <img src="${movie.medium_cover_image}">
         </div>
@@ -148,33 +148,33 @@ fetch('https://randomuser.me/api/dsfdsfsd')
     html.body.innerHTML = HTMLString;
     return html.body.children[0];
   }
-  // console.log(videoItemTemplate('src/images/covers/bitcoinjpg', 'bitcoin'));
-
   function addEventClick($element) {
     $element.addEventListener('click', () => {
-      //alert('click')
-      showModal(element)
+      // alert('click')
+      showModal($element)
     })
-    //$('div').on('click')
   }
-  function renderMovieList(list, $container,category) {
+  function renderMovieList(list, $container, category) {
+    // actionList.data.movies
     $container.children[0].remove();
-    //actionList.data.movies.forEach((movie) => {
     list.forEach((movie) => {
-      const HTMLString = videoItemTemplate(movie,category);
-      const movieElement = createTemplate(HTMLString)
+      const HTMLString = videoItemTemplate(movie, category);
+      const movieElement = createTemplate(HTMLString);
       $container.append(movieElement);
       addEventClick(movieElement);
     })
   }
   const $actionContainer = document.querySelector('#action');
-  renderMovieList(actionList.data.movies, $actionContainer, 'action')
+  renderMovieList(actionList, $actionContainer, 'action');
 
   const $dramaContainer = document.getElementById('drama');
-  renderMovieList(dramaList.data.movies, $dramaContainer, 'drama')
+  renderMovieList(dramaList, $dramaContainer, 'drama');
 
   const $animationContainer = document.getElementById('animation');
-  renderMovieList(animationList.data.movies, $animationContainer, 'animation')
+  renderMovieList(animationList, $animationContainer, 'animation');
+
+
+
 
 
 
@@ -189,24 +189,44 @@ fetch('https://randomuser.me/api/dsfdsfsd')
   const $modalImage = $modal.querySelector('img');
   const $modalDescription = $modal.querySelector('p');
 
-  function findMovie(id,category) {
-    
+  function findById(list, id) {
+    return list.find(movie => movie.id === parseInt(id, 10))
+  }
+
+  function findMovie(id, category) {
+    switch (category) {
+      case 'action': {
+        return findById(actionList, id)
+      }
+      case 'drama': {
+        return findById(dramaList, id)
+      }
+      default: {
+        return findById(animationList, id)
+      }
+    }
   }
 
   function showModal($element) {
     $overlay.classList.add('active');
     $modal.style.animation = 'modalIn .8s forwards';
-    const id = $element.dataset.id
+    const id = $element.dataset.id;
     const category = $element.dataset.category;
-    const data = findMovie(id,category);
+    const data = findMovie(id, category);
+
+    $modalTitle.textContent = data.title;
+    $modalImage.setAttribute('src', data.medium_cover_image);
+    $modalDescription.textContent = data.description_full
   }
 
   $hideModal.addEventListener('click', hideModal);
-
   function hideModal() {
     $overlay.classList.remove('active');
     $modal.style.animation = 'modalOut .8s forwards';
+
   }
+
+
 
 
 })()
